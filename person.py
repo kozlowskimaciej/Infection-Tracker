@@ -9,17 +9,18 @@ class InvalidMeetingDateError(Exception):
 
 class InvalidPersonError(Exception):
     def __init__(self, person):
-        super().__init__(f"{person} is not an instance of Person class.")  
+        super().__init__(f"{person} is not a valid person.")  
+
+class InvalidDiseaseError(Exception):
+    def __init__(self, disease):
+        super().__init__(f"{disease} is not a valid disease.")  
 
 
 class Person:
-    def __init__(self, name: str, surname: str, meeting_list: list = None) -> None:
-        if meeting_list == None:
-            meeting_list = []
-
-        self._name = name
-        self._surname = surname
-        self._meeting_list = meeting_list
+    def __init__(self, name: str, surname: str) -> None:
+        self._name = str(name)
+        self._surname = str(surname)
+        self._meeting_list = []
 
     def add_meeting(self, person, date: str, duration: int) -> None:
         if not isinstance(person, Person):
@@ -31,10 +32,21 @@ class Person:
         except ValueError:
             raise InvalidMeetingDateError(date, duration)
 
+        meeting_uuid = uuid.uuid4()
+
         self._meeting_list.append(
             {
-                "uuid": uuid.uuid4(),
+                "uuid": meeting_uuid,
                 "person": person,
+                "date": date,
+                "duration": duration
+            }
+        )
+
+        person._meeting_list.append(
+            {
+                "uuid": meeting_uuid,
+                "person": self,
                 "date": date,
                 "duration": duration
             }
@@ -43,12 +55,15 @@ class Person:
     def meetings(self) -> list:
         return self._meeting_list
 
-    def who_is_infected(self, disease: Disease, last_meeting_date: datetime = None, last_meeting_duration: timedelta = None, checked_meetings: list = None, infected_people: list = None) -> list:
+    def who_is_infected(self, disease: Disease, last_meeting_date: datetime = None, last_meeting_duration: timedelta = None, checked_meetings: list = None, infected_people: list = None) -> set:
+        if not isinstance(disease, Disease):
+            raise InvalidDiseaseError(disease)
+        
         if checked_meetings is None:
             checked_meetings = []
         
         if infected_people is None:
-            infected_people = []
+            infected_people = {self.__str__()}
 
         for meeting in self._meeting_list:
             if meeting["uuid"] not in checked_meetings:
@@ -56,5 +71,10 @@ class Person:
                     meeting["date"] >= last_meeting_date and (
                         meeting["date"] <= last_meeting_date + last_meeting_duration + disease.get_infectious_period())):
                     checked_meetings.append(meeting["uuid"])
-                    infected_people.append(meeting["person"])
+                    infected_people.add(meeting["person"].__str__())
                     meeting["person"].who_is_infected(disease, meeting["date"], meeting["duration"], checked_meetings, infected_people)
+        
+        return infected_people
+
+    def __str__(self) -> str:
+        return f"{self._name} {self._surname}"
