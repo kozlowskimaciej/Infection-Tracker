@@ -13,7 +13,7 @@ class Disease:
     :param infectious_period: Disease's infectious period
     :type infectious_period: timedelta
     '''
-    def __init__(self, infectious_period: int, name = None) -> None:
+    def __init__(self, name, infectious_period: int) -> None:
         '''
         Initalizes disease object
         '''
