@@ -13,11 +13,11 @@ class Disease:
     :param infectious_period: Disease's infectious period
     :type infectious_period: timedelta
     '''
-    def __init__(self, name: str, infectious_period: int) -> None:
+    def __init__(self, infectious_period: int, name = None) -> None:
         '''
         Initalizes disease object
         '''
-        self._name = str(name)
+        self._name = name
         try:
             self._infectious_period = timedelta(minutes=infectious_period)
         except TypeError:
