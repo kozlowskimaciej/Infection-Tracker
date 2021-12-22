@@ -1,4 +1,4 @@
-from disease import Disease, InvalidInfectiousPeriodError
+from infection_tracker.disease import Disease, InvalidInfectiousPeriodError
 from datetime import time, timedelta
 import pytest
 

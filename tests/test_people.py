@@ -1,5 +1,5 @@
-from person import *
-from disease import Disease
+from infection_tracker.person import *
+from infection_tracker.disease import Disease
 from datetime import datetime, timedelta
 import pytest
 
