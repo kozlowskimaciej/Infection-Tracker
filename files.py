@@ -17,3 +17,7 @@ def read_meetings_csv(file):
             people[person1].add_meeting(people[person2], row['Date'], int(row['Duration']))
 
         return people
+
+def write_file_infected(file, infected):
+    with open(file, 'w') as f:
+        f.write(infected)
