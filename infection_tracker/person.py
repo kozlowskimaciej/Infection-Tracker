@@ -43,7 +43,7 @@ class Person:
             raise InvalidPersonError(person)
 
         try:
-            date = datetime.strptime(date, "%d.%m.%Y %H:%M")
+            date = datetime.fromisoformat(date)
             duration = timedelta(minutes=duration)
         except ValueError:
             raise InvalidDateError(date)
@@ -91,7 +91,7 @@ class Person:
             raise InvalidDiseaseError(disease)
 
         try:
-            when_diagnosed = datetime.strptime(when_diagnosed_str, "%d.%m.%Y %H:%M")
+            when_diagnosed = datetime.fromisoformat(when_diagnosed_str)
         except ValueError:
             raise InvalidDateError(when_diagnosed_str)
 
