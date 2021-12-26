@@ -6,10 +6,11 @@ import argparse
 
 
 def parser(arguments):
+    # loads text from help_messages.json file
     with open('help_messages.json') as f:
         help_msg = json.load(f)
 
-    parser = argparse.ArgumentParser(description='wip')
+    parser = argparse.ArgumentParser(description=help_msg['description'])
 
     parser.add_argument('meetings',
                         help=help_msg['meetings'])
@@ -20,6 +21,10 @@ def parser(arguments):
     parser.add_argument('period',
                         type=int,
                         help=help_msg['period'])
+
+    parser.add_argument('date',
+                        type=str,
+                        help=help_msg['date'])
 
     parser.add_argument('--name',
                         help=help_msg['--name'])

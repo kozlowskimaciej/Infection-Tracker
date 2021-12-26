@@ -1,11 +1,11 @@
 from datetime import datetime, timedelta
-from disease import Disease
+from infection_tracker.disease import Disease
 import uuid
 
 
-class InvalidMeetingDateError(Exception):
-    def __init__(self, date, duration):
-        super().__init__(f"{date} {duration} is not a valid date.")
+class InvalidDateError(Exception):
+    def __init__(self, date):
+        super().__init__(f"{date} is not a valid date.")
 
 
 class InvalidPersonError(Exception):
@@ -46,7 +46,7 @@ class Person:
             date = datetime.strptime(date, "%d.%m.%Y %H:%M")
             duration = timedelta(minutes=duration)
         except ValueError:
-            raise InvalidMeetingDateError(date, duration)
+            raise InvalidDateError(date)
 
         # Creating an universally unique identifier for a meeting
         meeting_uuid = uuid.uuid4()
@@ -77,6 +77,7 @@ class Person:
 
     def who_is_infected(self,
                         disease: Disease,
+                        when_diagnosed_str: str,
                         last_meeting_date: datetime = None,
                         last_meeting_duration: timedelta = None,
                         checked_meetings: list = None,
@@ -89,6 +90,11 @@ class Person:
         except Exception:
             raise InvalidDiseaseError(disease)
 
+        try:
+            when_diagnosed = datetime.strptime(when_diagnosed_str, "%d.%m.%Y %H:%M")
+        except ValueError:
+            raise InvalidDateError(when_diagnosed_str)
+
         if checked_meetings is None:
             checked_meetings = []
 
@@ -97,7 +103,7 @@ class Person:
 
         for meeting in self._meeting_list:
             if meeting["uuid"] not in checked_meetings:
-                if last_meeting_date is None or (
+                if (last_meeting_date is None and meeting["date"] >= when_diagnosed - infection_period) or (last_meeting_date is not None and
                     meeting["date"] >= last_meeting_date and (
                         meeting["date"] <=
                         ((last_meeting_date + last_meeting_duration)
@@ -105,6 +111,7 @@ class Person:
                     checked_meetings.append(meeting["uuid"])
                     infected_people.add(meeting["person"].__str__())
                     meeting["person"].who_is_infected(disease,
+                                                      when_diagnosed_str,
                                                       meeting["date"],
                                                       meeting["duration"],
                                                       checked_meetings,

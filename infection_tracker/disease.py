@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import time, timedelta
 
 
 class InvalidInfectiousPeriodError(Exception):
@@ -31,7 +31,7 @@ class Disease:
         '''
         return self._name
 
-    def get_infectious_period(self) -> str:
+    def get_infectious_period(self) -> timedelta:
         '''
         Returns disease's infectious period
         '''
