@@ -1,19 +1,21 @@
 from datetime import datetime, timedelta
-from infection_tracker.disease import Disease
+from disease import Disease
 import uuid
 
 
 class InvalidMeetingDateError(Exception):
     def __init__(self, date, duration):
-        super().__init__(f"{date} {duration} is not a valid date.") 
+        super().__init__(f"{date} {duration} is not a valid date.")
+
 
 class InvalidPersonError(Exception):
     def __init__(self, person):
-        super().__init__(f"{person} is not a valid person.")  
+        super().__init__(f"{person} is not a valid person.")
+
 
 class InvalidDiseaseError(Exception):
     def __init__(self, disease):
-        super().__init__(f"{disease} is not a valid disease.")  
+        super().__init__(f"{disease} is not a valid disease.")
 
 
 class Person:
@@ -73,16 +75,23 @@ class Person:
         '''
         return self._meeting_list
 
-    def who_is_infected(self, disease: Disease, last_meeting_date: datetime = None, last_meeting_duration: timedelta = None, checked_meetings: list = None, infected_people: list = None) -> set:
+    def who_is_infected(self,
+                        disease: Disease,
+                        last_meeting_date: datetime = None,
+                        last_meeting_duration: timedelta = None,
+                        checked_meetings: list = None,
+                        infected_people: list = None) -> set:
         '''
-        Return a list of possibly infected people.
+        Returns a list of possibly infected people.
         '''
-        if not isinstance(disease, Disease):
+        try:
+            infection_period = disease.get_infectious_period()
+        except Exception:
             raise InvalidDiseaseError(disease)
-        
+
         if checked_meetings is None:
             checked_meetings = []
-        
+
         if infected_people is None:
             infected_people = {self.__str__()}
 
@@ -90,11 +99,17 @@ class Person:
             if meeting["uuid"] not in checked_meetings:
                 if last_meeting_date is None or (
                     meeting["date"] >= last_meeting_date and (
-                        meeting["date"] <= last_meeting_date + last_meeting_duration + disease.get_infectious_period())):
+                        meeting["date"] <=
+                        ((last_meeting_date + last_meeting_duration)
+                            + infection_period))):
                     checked_meetings.append(meeting["uuid"])
                     infected_people.add(meeting["person"].__str__())
-                    meeting["person"].who_is_infected(disease, meeting["date"], meeting["duration"], checked_meetings, infected_people)
-        
+                    meeting["person"].who_is_infected(disease,
+                                                      meeting["date"],
+                                                      meeting["duration"],
+                                                      checked_meetings,
+                                                      infected_people)
+
         return infected_people
 
     def __str__(self) -> str:

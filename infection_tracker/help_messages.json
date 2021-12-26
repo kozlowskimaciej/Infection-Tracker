@@ -1,0 +1,7 @@
+{
+    "meetings": "CSV file that contains informations about meetings. The order of columns is as follows: Name_1, Surname_1, Name_2, Surname_2, Date (d.m.Y h:M format), Duration (in minutes).",
+    "infected": "Name and surname of an infected person, e.g. 'Mark Howling'.",
+    "period": "Infectious period of a disease (in minutes).",
+    "--name": "Name of disease.",
+    "--output": "Save output in file."
+}

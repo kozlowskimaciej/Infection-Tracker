@@ -1,8 +1,10 @@
 from datetime import timedelta
 
+
 class InvalidInfectiousPeriodError(Exception):
     def __init__(self, period):
-        super().__init__(f"{period} is not a valid time.") 
+        super().__init__(f"{period} is not a valid time.")
+
 
 class Disease:
     '''
