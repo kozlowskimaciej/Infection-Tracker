@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from infection_tracker.disease import Disease
+from disease import Disease
 import uuid
 
 
@@ -35,6 +35,20 @@ class Person:
         self._surname = str(surname)
         self._meeting_list = []
 
+    def _add_to_meeting_list(self,
+                             uuid: int,
+                             person: str,
+                             date: datetime,
+                             duration: timedelta) -> None:
+        self._meeting_list.append(
+            {
+                "uuid": uuid,
+                "person": person,
+                "date": date,
+                "duration": duration
+            }
+        )
+
     def add_meeting(self, person, date: str, duration: int) -> None:
         '''
         Adds new meeting to person's meeting list.
@@ -51,23 +65,8 @@ class Person:
         # Creating an universally unique identifier for a meeting
         meeting_uuid = uuid.uuid4()
 
-        self._meeting_list.append(
-            {
-                "uuid": meeting_uuid,
-                "person": person,
-                "date": date,
-                "duration": duration
-            }
-        )
-
-        person._meeting_list.append(
-            {
-                "uuid": meeting_uuid,
-                "person": self,
-                "date": date,
-                "duration": duration
-            }
-        )
+        self._add_to_meeting_list(meeting_uuid, person, date, duration)
+        person._add_to_meeting_list(meeting_uuid, self, date, duration)
 
     def meetings(self) -> list:
         '''

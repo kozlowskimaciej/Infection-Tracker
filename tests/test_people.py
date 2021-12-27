@@ -81,7 +81,8 @@ def test_who_is_infected_list_only_self():
     person2.add_meeting(person3, "2021-12-19 04:00", 60)
     person3.add_meeting(person4, "2021-12-19 01:00", 60)
     disease = Disease("Covid-19", 30)
-    assert person1.who_is_infected(disease, "2021-12-19 03:30") == {'Carson Keeling'}
+    assert person1.who_is_infected(disease, "2021-12-19 03:30") == (
+        {'Carson Keeling'})
 
 
 def test_who_is_infected_list_only_one():
