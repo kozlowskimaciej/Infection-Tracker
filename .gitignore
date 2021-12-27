@@ -3,4 +3,3 @@ __pycache__/
 .pytest_cache/
 .vscode/
 .vscode/settings.json
-example_data/

@@ -5,30 +5,20 @@ import json
 import argparse
 
 
-def parser(arguments):
-    # loads text from help_messages.json file
-    with open('help_messages.json') as f:
+def console_ui(arguments):
+    # loads dictionary with messages from help_messages.json file
+    with open('infection_tracker/help_messages.json') as f:
         help_msg = json.load(f)
 
     parser = argparse.ArgumentParser(description=help_msg['description'])
 
-    parser.add_argument('meetings',
-                        help=help_msg['meetings'])
+    # loads arguments based on help_messages.json file
+    for argument in help_msg:
+        if argument not in {'description', '--output'}:
+            parser.add_argument(argument, help=help_msg[argument])
 
-    parser.add_argument('infected',
-                        help=help_msg['infected'])
-
-    parser.add_argument('period',
-                        type=int,
-                        help=help_msg['period'])
-
-    parser.add_argument('date',
-                        type=str,
-                        help=help_msg['date'])
-
-    parser.add_argument('--name',
-                        help=help_msg['--name'])
-
+    # optional argument for saving program's output in file
+    # default name is 'output'
     parser.add_argument('--output',
                         nargs='?',
                         const='output',
@@ -36,14 +26,15 @@ def parser(arguments):
 
     args = parser.parse_args(arguments[1:])
 
+    # if disease's name is not provided, set it to None
     if not args.name:
         name = None
 
     disease = Disease(name, int(args.period))
     people = read_meetings_csv(args.meetings)
 
+    # make a list with infected people
     infected_list = people.get(args.infected).who_is_infected(disease)
-
     infected = ", ".join(infected_list)
 
     print(infected)
@@ -53,8 +44,9 @@ def parser(arguments):
 
 
 def main(arguments):
+    # if arguments are present, use console interface
     if len(arguments) > 1:
-        parser(arguments)
+        console_ui(arguments)
 
 
 if __name__ == "__main__":
