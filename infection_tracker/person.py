@@ -77,7 +77,7 @@ class Person:
 
     def who_is_infected(self,
                         disease: Disease,
-                        when_diagnosed_str: str,
+                        when_diagnosed: str,
                         last_meeting_date: datetime = None,
                         last_meeting_duration: timedelta = None,
                         checked_meetings: list = None,
@@ -90,10 +90,11 @@ class Person:
         except Exception:
             raise InvalidDiseaseError(disease)
 
-        try:
-            when_diagnosed = datetime.fromisoformat(when_diagnosed_str)
-        except ValueError:
-            raise InvalidDateError(when_diagnosed_str)
+        if not isinstance(when_diagnosed, datetime):
+            try:
+                when_diagnosed = datetime.fromisoformat(when_diagnosed)
+            except ValueError:
+                raise InvalidDateError(when_diagnosed)
 
         if checked_meetings is None:
             checked_meetings = []
@@ -113,7 +114,7 @@ class Person:
                     checked_meetings.append(meeting["uuid"])
                     infected_people.add(meeting["person"].__str__())
                     meeting["person"].who_is_infected(disease,
-                                                      when_diagnosed_str,
+                                                      when_diagnosed,
                                                       meeting["date"],
                                                       meeting["duration"],
                                                       checked_meetings,
