@@ -40,6 +40,7 @@ class Person:
                              person: str,
                              date: datetime,
                              duration: timedelta) -> None:
+
         self._meeting_list.append(
             {
                 "uuid": uuid,
@@ -102,11 +103,13 @@ class Person:
 
         for meeting in self._meeting_list:
             if meeting["uuid"] not in checked_meetings:
-                if (last_meeting_date is None and meeting["date"] >= when_diagnosed - infection_period) or (last_meeting_date is not None and
-                    meeting["date"] >= last_meeting_date and (
+                if (last_meeting_date is None and
+                    meeting["date"] >= when_diagnosed - infection_period) or (
+                        last_meeting_date is not None and
+                        meeting["date"] >= last_meeting_date and
                         meeting["date"] <=
                         ((last_meeting_date + last_meeting_duration)
-                            + infection_period))):
+                            + infection_period)):
                     checked_meetings.append(meeting["uuid"])
                     infected_people.add(meeting["person"].__str__())
                     meeting["person"].who_is_infected(disease,
