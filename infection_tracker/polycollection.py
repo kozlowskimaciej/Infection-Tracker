@@ -28,11 +28,6 @@ class PolyCollection:
 
         plt.barh(range(len(beg_sort)), end_sort-beg_sort, left=beg_sort, align='center')
 
-        plt.gca().xaxis.set_major_locator(mdates.WeekdayLocator(byweekday=(0), interval=1))
-        plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%d\n%a'))
-        plt.gca().xaxis.set_minor_locator(mdates.MonthLocator())
-        plt.gca().xaxis.set_minor_formatter(mdates.DateFormatter('\n\n\n%b\n%Y'))
-
         plt.yticks(range(len(beg_sort)), evt_sort)
 
         plt.show()

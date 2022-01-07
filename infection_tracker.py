@@ -34,7 +34,8 @@ def console_ui(arguments):
     people = read_meetings_csv(args.meetings)
 
     # make a list with infected people
-    infected_list = people.get(args.infected).who_is_infected(disease, args.date)
+    infected_list = people.get(args.infected).who_is_infected(disease,
+                                                              args.date)
     infected = ", ".join(infected_list)
 
     print(infected)
@@ -45,7 +46,7 @@ def console_ui(arguments):
 
 def main(arguments):
     # if arguments are present, use console interface
-    if arguments:
+    if len(arguments) > 1:
         console_ui(arguments)
 
 
