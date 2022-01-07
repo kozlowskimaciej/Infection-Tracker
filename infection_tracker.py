@@ -34,7 +34,7 @@ def console_ui(arguments):
     people = read_meetings_csv(args.meetings)
 
     # make a list with infected people
-    infected_list = people.get(args.infected).who_is_infected(disease)
+    infected_list = people.get(args.infected).who_is_infected(disease, args.date)
     infected = ", ".join(infected_list)
 
     print(infected)
@@ -50,4 +50,4 @@ def main(arguments):
 
 
 if __name__ == "__main__":
-    main(sys.argv[1:])
+    main(sys.argv)

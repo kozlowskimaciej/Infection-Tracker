@@ -1,41 +1,38 @@
 import datetime as dt
 import matplotlib.pyplot as plt
+import numpy as np
 import matplotlib.dates as mdates
 from matplotlib.collections import PolyCollection
-from infection_tracker.disease import Disease
-from infection_tracker.person import Person
 
 class PolyCollection:
     def __init__(self, disease):
-        self.data = []
-        self.cats = []
-        self.collection_name = disease.get_disease_name()
+        self.disease = disease
+        self.event = []
+        self.begin = []
+        self.end = []
 
-    def add(self, person, last_meeting_date, last_meeting_duration):
-        self.data += [
-            (last_meeting_date, last_meeting_date + last_meeting_duration, person.__str__())
-            ]
-        self.cats += {person.__str__()}
+    def add(self, person1, person2, last_meeting_date, last_meeting_duration):
+        self.event.append(f'{person1} | {person2}')
+        self.begin.append(last_meeting_date)
+        self.end.append(last_meeting_date + last_meeting_duration + self.disease.get_infectious_period())
 
     def show(self):
-        verts = []
-        for d in self.data:
-            v =  [(mdates.date2num(d[0]), self.cats[d[2]]-.4),
-                (mdates.date2num(d[0]), self.cats[d[2]]+.4),
-                (mdates.date2num(d[1]), self.cats[d[2]]+.4),
-                (mdates.date2num(d[1]), self.cats[d[2]]-.4),
-                (mdates.date2num(d[0]), self.cats[d[2]]-.4)]
-            verts.append(v)
+        self.event = np.array(self.event)
+        self.begin = np.array(self.begin)
+        self.end = np.array(self.end)
 
-        bars = PolyCollection(self.verts)
+        beg_sort = np.sort(self.begin)
+        end_sort = self.end[np.argsort(self.begin)]
+        evt_sort = self.event[np.argsort(self.begin)]
+        plt.rcParams['ytick.labelsize'] = 'small'
 
-        fig, ax = plt.subplots()
-        ax.add_collection(bars)
-        ax.autoscale()
-        loc = mdates.MinuteLocator(byminute=[0,15,30,45])
-        ax.xaxis.set_major_locator(loc)
-        ax.xaxis.set_major_formatter(mdates.AutoDateFormatter(loc))
+        plt.barh(range(len(beg_sort)), end_sort-beg_sort, left=beg_sort, align='center')
 
-        ax.set_yticks([1,2,3])
-        ax.set_yticklabels(["sleep", "eat", "work"])
+        plt.gca().xaxis.set_major_locator(mdates.WeekdayLocator(byweekday=(0), interval=1))
+        plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%d\n%a'))
+        plt.gca().xaxis.set_minor_locator(mdates.MonthLocator())
+        plt.gca().xaxis.set_minor_formatter(mdates.DateFormatter('\n\n\n%b\n%Y'))
+
+        plt.yticks(range(len(beg_sort)), evt_sort)
+
         plt.show()

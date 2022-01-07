@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from infection_tracker.disease import Disease
+from infection_tracker.polycollection import PolyCollection
 import uuid
 
 
@@ -81,7 +82,8 @@ class Person:
                         last_meeting_date: datetime = None,
                         last_meeting_duration: timedelta = None,
                         checked_meetings: list = None,
-                        infected_people: list = None) -> set:
+                        infected_people: list = None,
+                        plot = None) -> set:
         '''
         Returns a list of possibly infected people.
         '''
@@ -102,6 +104,9 @@ class Person:
         if infected_people is None:
             infected_people = {self.__str__()}
 
+        if last_meeting_date is None:
+            plot = PolyCollection(disease)
+
         for meeting in self._meeting_list:
             if meeting["uuid"] not in checked_meetings:
                 if (last_meeting_date is None and
@@ -111,6 +116,10 @@ class Person:
                         meeting["date"] <=
                         ((last_meeting_date + last_meeting_duration)
                             + infection_period)):
+                    plot.add(self.__str__(),
+                             meeting["person"].__str__(),
+                             meeting["date"],
+                             meeting["duration"])
                     checked_meetings.append(meeting["uuid"])
                     infected_people.add(meeting["person"].__str__())
                     meeting["person"].who_is_infected(disease,
@@ -118,7 +127,11 @@ class Person:
                                                       meeting["date"],
                                                       meeting["duration"],
                                                       checked_meetings,
-                                                      infected_people)
+                                                      infected_people,
+                                                      plot)
+
+        if last_meeting_date is None:
+            plot.show()
 
         return infected_people
 
