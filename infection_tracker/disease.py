@@ -22,7 +22,7 @@ class Disease:
         self._name = name
         try:
             self._infectious_period = timedelta(minutes=int(infectious_period))
-        except TypeError:
+        except Exception:
             raise InvalidInfectiousPeriodError(infectious_period)
 
     def get_disease_name(self) -> str:
