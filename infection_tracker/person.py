@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from disease import Disease
+from infection_tracker.disease import Disease
 import uuid
 
 

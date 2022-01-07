@@ -21,7 +21,7 @@ class Disease:
         '''
         self._name = name
         try:
-            self._infectious_period = timedelta(minutes=infectious_period)
+            self._infectious_period = timedelta(minutes=int(infectious_period))
         except TypeError:
             raise InvalidInfectiousPeriodError(infectious_period)
 

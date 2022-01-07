@@ -1,5 +1,5 @@
-from disease import Disease
-from files import read_meetings_csv, write_file_infected
+from infection_tracker.disease import Disease
+from infection_tracker.files import read_meetings_csv, write_file_infected
 import sys
 import json
 import argparse
@@ -45,9 +45,9 @@ def console_ui(arguments):
 
 def main(arguments):
     # if arguments are present, use console interface
-    if len(arguments) > 1:
+    if arguments:
         console_ui(arguments)
 
 
 if __name__ == "__main__":
-    main(sys.argv)
+    main(sys.argv[1:])

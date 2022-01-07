@@ -1,5 +1,5 @@
 import csv
-from person import Person
+from infection_tracker.person import Person
 
 
 def read_meetings_csv(file):
