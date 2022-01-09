@@ -4,6 +4,7 @@ import numpy as np
 import matplotlib.dates as mdates
 from matplotlib.collections import PolyCollection
 
+
 class PolyCollection:
     def __init__(self, disease):
         self.disease = disease
@@ -24,7 +25,7 @@ class PolyCollection:
         beg_sort = np.sort(self.begin)
         end_sort = self.end[np.argsort(self.begin)]
         evt_sort = self.event[np.argsort(self.begin)]
-        plt.rcParams['ytick.labelsize'] = 'small'
+        plt.rcParams['ytick.labelsize'] = 'xx-small'
 
         plt.barh(range(len(beg_sort)), end_sort-beg_sort, left=beg_sort, align='center')
 

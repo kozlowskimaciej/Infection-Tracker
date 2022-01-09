@@ -1,11 +1,11 @@
 import sys
-from infection_tracker.console_ui import ConsoleUI
+from infection_tracker.ui.cli_ui import CLI_UI
 
 
 def main(arguments):
     # if arguments are present, use console interface
     if len(arguments) > 1:
-        ConsoleUI(arguments)
+        CLI_UI(arguments)
     else:
         print("INFECTION TRACKER")
 

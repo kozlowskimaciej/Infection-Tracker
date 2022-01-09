@@ -6,7 +6,10 @@ import argparse
 HELP_MSG_PATH = 'infection_tracker/help_messages.json'
 
 
-class ConsoleUI:
+class CLI_UI:
+    '''
+    Command-line interface
+    '''
     def __init__(self, arguments):
 
         args = self._parse_args(arguments)
