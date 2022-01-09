@@ -9,9 +9,7 @@ HELP_MSG_PATH = 'infection_tracker/help_messages.json'
 class ConsoleUI:
     def __init__(self, arguments):
 
-        parser = self._add_args()
-
-        args = parser.parse_args(arguments[1:])
+        args = self._parse_args(arguments)
 
         # if disease's name is not provided, set it to None
         if not args.name:
@@ -29,6 +27,11 @@ class ConsoleUI:
 
         if args.output:
             write_file_infected(args.output, infected_list)
+
+    def _parse_args(self, arguments):
+        parser = self._add_args()
+        args = parser.parse_args(arguments[1:])
+        return args
 
     def _add_args(self):
         # loads dictionary with messages from help_messages.json file
