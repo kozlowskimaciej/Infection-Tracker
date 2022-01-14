@@ -1,22 +1,9 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 from infection_tracker.disease import Disease
-from infection_tracker.polycollection import PolyCollection
-import uuid
-
-
-class InvalidDateError(Exception):
-    def __init__(self, date):
-        super().__init__(f"{date} is not a valid date.")
-
-
-class InvalidPersonError(Exception):
-    def __init__(self, person):
-        super().__init__(f"{person} is not a valid person.")
-
-
-class InvalidDiseaseError(Exception):
-    def __init__(self, disease):
-        super().__init__(f"{disease} is not a valid disease.")
+from infection_tracker.meeting import Meeting
+from infection_tracker.exceptions import (InvalidDateError,
+                                          InvalidDiseaseError,
+                                          InvalidPersonError)
 
 
 class Person:
@@ -36,21 +23,6 @@ class Person:
         self._surname = str(surname)
         self._meeting_list = []
 
-    def _add_to_meeting_list(self,
-                             uuid: int,
-                             person: str,
-                             date: datetime,
-                             duration: timedelta) -> None:
-
-        self._meeting_list.append(
-            {
-                "uuid": uuid,
-                "person": person,
-                "date": date,
-                "duration": duration
-            }
-        )
-
     def add_meeting(self, person, date: str, duration: int) -> None:
         '''
         Adds new meeting to person's meeting list.
@@ -58,18 +30,11 @@ class Person:
         if not isinstance(person, Person):
             raise InvalidPersonError(person)
 
-        try:
-            date = datetime.fromisoformat(date)
-            duration = timedelta(minutes=int(duration))
-        except ValueError:
-            raise InvalidDateError(date)
-
-        # Creating an universally unique identifier for a meeting
-        meeting_uuid = uuid.uuid4()
+        meeting = Meeting(self, person, date, duration)
 
         # Add the meeting to both people's meeting list
-        self._add_to_meeting_list(meeting_uuid, person, date, duration)
-        person._add_to_meeting_list(meeting_uuid, self, date, duration)
+        self._meeting_list.append(meeting)
+        person._meeting_list.append(meeting)
 
     def meetings(self) -> list:
         '''
@@ -80,11 +45,9 @@ class Person:
     def who_is_infected(self,
                         disease: Disease,
                         when_diagnosed: str,
-                        last_meeting_date: datetime = None,
-                        last_meeting_duration: timedelta = None,
+                        last_meeting: Meeting = None,
                         checked_meetings: list = None,
-                        infected_people: list = None,
-                        plot=None) -> set:
+                        infected_people: list = None) -> set:
         '''
         Returns a list of possibly infected people.
         '''
@@ -108,8 +71,10 @@ class Person:
         if infected_people is None:
             infected_people = {self.__str__()}
 
-        if last_meeting_date is None:
-            plot = PolyCollection(disease)
+        if last_meeting is not None:
+            last_meet_date = last_meeting.date()
+        else:
+            last_meet_date = None
 
         # Search for all meetings which happend after the diagnosis date
         # minus infectious period of the disease
@@ -119,34 +84,34 @@ class Person:
         # it's duration plus infectious period of the disease.
 
         for meeting in self._meeting_list:
-            if meeting["uuid"] not in checked_meetings:
-                if (last_meeting_date is None and
-                    meeting["date"] >= when_diagnosed - infection_period) or (
-                        last_meeting_date is not None and
-                        meeting["date"] >= last_meeting_date and
-                        meeting["date"] <=
-                        ((last_meeting_date + last_meeting_duration)
+
+            people = meeting.people()
+            if people[0].__str__() == self.__str__():
+                other_person = people[1]
+            else:
+                other_person = people[0]
+
+            if meeting.uuid() not in checked_meetings:
+                meet_date = meeting.date()
+                if (last_meet_date is None and
+                    meet_date >= when_diagnosed - infection_period) or (
+                        last_meet_date is not None and
+                        meet_date >= last_meet_date and
+                        meet_date <=
+                        ((last_meet_date + last_meeting.duration())
                             + infection_period)):
-                    plot.add(self.__str__(),
-                             meeting["person"].__str__(),
-                             meeting["date"],
-                             meeting["duration"])
-                    checked_meetings.append(meeting["uuid"])
-                    infected_people.add(meeting["person"].__str__())
+                    # print(meeting.__str__(), other_person, sep=" ")
+                    checked_meetings.append(meeting.uuid())
+                    infected_people.add(other_person.__str__())
 
                     # Recursively search in potentially infected person's
                     # meeting list for another people
 
-                    meeting["person"].who_is_infected(disease,
-                                                      when_diagnosed,
-                                                      meeting["date"],
-                                                      meeting["duration"],
-                                                      checked_meetings,
-                                                      infected_people,
-                                                      plot)
-
-        if last_meeting_date is None:
-            plot.show()
+                    other_person.who_is_infected(disease,
+                                                 when_diagnosed,
+                                                 meeting,
+                                                 checked_meetings,
+                                                 infected_people)
 
         return infected_people
 

@@ -4,7 +4,8 @@ from infection_tracker.ui.tui_ui import TUI_UI
 
 
 def main(arguments):
-    # if arguments are present, use console interface
+    # If arguments are present, use command-line interface,
+    # else use text-based user interface
     if len(arguments) > 1:
         CLI_UI(arguments)
     else:

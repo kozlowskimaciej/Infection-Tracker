@@ -1,9 +1,5 @@
 from datetime import timedelta
-
-
-class InvalidInfectiousPeriodError(Exception):
-    def __init__(self, period):
-        super().__init__(f"{period} is not a valid time.")
+from infection_tracker.exceptions import InvalidInfectiousPeriodError
 
 
 class Disease:
@@ -25,7 +21,7 @@ class Disease:
         except Exception:
             raise InvalidInfectiousPeriodError(infectious_period)
 
-    def get_disease_name(self) -> str:
+    def __str__(self) -> str:
         '''
         Returns disease's name
         '''

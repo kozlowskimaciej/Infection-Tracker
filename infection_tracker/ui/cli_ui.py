@@ -1,5 +1,6 @@
 from infection_tracker.disease import Disease
 from infection_tracker.files import read_meetings_csv, write_file_infected
+from infection_tracker.exceptions import PersonNotExistsError
 import json
 import argparse
 
@@ -22,8 +23,13 @@ class CLI_UI:
         people = read_meetings_csv(args.meetings)
 
         # make a list with infected people
-        infected_list = people.get(args.infected).who_is_infected(disease,
-                                                                  args.date)
+        infected_person = people.get(args.infected)
+
+        try:
+            infected_list = infected_person.who_is_infected(disease, args.date)
+        except AttributeError:
+            raise PersonNotExistsError(args.infected)
+
         infected_list = ", ".join(infected_list)
 
         print(infected_list)
