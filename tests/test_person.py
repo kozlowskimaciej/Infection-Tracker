@@ -82,6 +82,27 @@ def test_person_remove_meeting_two():
     assert person1.meetings()[0].uuid() == meeting2_uuid
 
 
+def test_person_remove_meeting_three():
+    people = []
+    person1 = Person("Chelsy", "Southern")
+    person2 = Person("Cally", "Fletcher")
+    person3 = Person("Marcus", "Moore")
+    person1.add_meeting(person2, "2019-12-21 02:00", 257)
+    person1.add_meeting(person2, "2019-12-22 12:44", 120)
+    person2.add_meeting(person3, "2019-12-24 12:44", 120)
+    people.append(person1)
+    people.append(person2)
+    people.append(person3)
+    meeting_uuid = person3.meetings()[0].uuid()
+    assert person1.meetings() != person2.meetings()
+    assert person1.meetings() != person3.meetings()
+    assert person2.meetings() != person3.meetings()
+    for person in people:
+        person.remove_meeting(meeting_uuid)
+    assert person3.meetings() == []
+    assert person1.meetings() == person2.meetings()
+
+
 def test_person_remove_meeting_empty():
     people = []
     person1 = Person("Chelsy", "Southern")

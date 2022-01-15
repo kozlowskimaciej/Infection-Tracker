@@ -13,6 +13,11 @@ class InvalidDateError(Exception):
         super().__init__(f"{date} is not a valid date.")
 
 
+class InvalidDurationError(Exception):
+    def __init__(self, duration):
+        super().__init__(f"{duration} is not a valid duration.")
+
+
 class InvalidPersonError(Exception):
     def __init__(self, person):
         super().__init__(f"{person} is not a valid person.")

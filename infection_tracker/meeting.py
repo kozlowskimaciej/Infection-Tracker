@@ -1,6 +1,7 @@
 import uuid
 from datetime import datetime, timedelta
-from infection_tracker.exceptions import InvalidDateError
+from infection_tracker.exceptions import (InvalidDateError,
+                                          InvalidDurationError)
 
 
 class Meeting:
@@ -8,9 +9,13 @@ class Meeting:
 
         try:
             date = datetime.fromisoformat(date)
-            duration = timedelta(minutes=int(duration))
         except ValueError:
             raise InvalidDateError(date)
+
+        try:
+            duration = timedelta(minutes=int(duration))
+        except ValueError:
+            raise InvalidDurationError(duration)
 
         # Creating an universally unique identifier for a meeting
         self._uuid = uuid.uuid4()

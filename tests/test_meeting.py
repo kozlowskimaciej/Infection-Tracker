@@ -1,6 +1,6 @@
 from infection_tracker.meeting import Meeting
 from infection_tracker.person import Person
-from infection_tracker.exceptions import InvalidDateError
+from infection_tracker.exceptions import InvalidDateError, InvalidDurationError
 from datetime import datetime, timedelta
 import pytest
 
@@ -31,7 +31,7 @@ def test_meeting_invalid_duration():
     person2 = Person("Name2", "Surname2")
     date = "2022-01-15 09:21"
     duration = "abc"
-    with pytest.raises(InvalidDateError):
+    with pytest.raises(InvalidDurationError):
         Meeting(person1, person2, date, duration)
 
 

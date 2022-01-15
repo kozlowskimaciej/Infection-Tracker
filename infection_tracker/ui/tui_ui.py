@@ -1,5 +1,6 @@
 from infection_tracker.disease import Disease
 from infection_tracker.person import Person
+from infection_tracker.exceptions import (InvalidInfectiousPeriodError)
 from datetime import datetime
 from infection_tracker.files import read_meetings_csv
 from prettytable import PrettyTable
@@ -54,7 +55,7 @@ class TUI_UI:
             print("\n")
             for choice in choices:
                 print(choice+". ", choices[choice]["message"], sep=" ")
-            choice_num = input("What's your choice?\n")
+            choice_num = input("What's your choice: ")
             try:
                 print(choices[choice_num]["function"]())
             except Exception:
@@ -76,7 +77,7 @@ class TUI_UI:
         except Exception:
             return "Wrong date."
 
-        duration = input("Meeting duration:")
+        duration = input("Meeting duration in minutes: ")
         try:
             duration = int(duration)
         except Exception:
@@ -99,11 +100,11 @@ class TUI_UI:
         return "Meeting added."
 
     def _remove_meeting(self):
-        uuid = input("Meeting's UUID:")
+        uuid = input("Meeting's UUID: ")
         for person in self._people:
             self._people[person].remove_meeting(uuid)
         self._set_meetings()
-        return "Meeting removed."
+        return f"Meeting {uuid} removed."
 
     def _show_meetings(self):
         self._set_meetings()
@@ -111,29 +112,32 @@ class TUI_UI:
         table.field_names = (
             ["UUID", "Person 1", "Person 2", "Date", "Duration"]
         )
-        for mt in self._meetings:
+        for meeting in self._meetings:
             table.add_row(
-                [mt.uuid(),
-                 mt.person1(),
-                 mt.person2(),
-                 mt.date(),
-                 mt.duration()]
+                [meeting.uuid(),
+                 meeting.person1(),
+                 meeting.person2(),
+                 meeting.date(),
+                 meeting.duration()]
                 )
         return table
 
     def _add_disease(self):
-        name = input("What's the disease's name?\n")
+        name = input("Disease's name: ")
         period = input(
-            "What's the disease's infectious period (in minutes)?\n"
+            "Disease's infectious period in minutes: "
             )
-        disease = Disease(name, period)
+        try:
+            disease = Disease(name, period)
+        except InvalidInfectiousPeriodError:
+            return "Invalid period."
         self._diseases.append(disease)
         return "Disease added."
 
     def _remove_disease(self):
         self._show_diseases()
         choice_num = input(
-            "Which disease do you want to remove?\n"
+            "Disease to remove (index): "
             )
 
         try:
@@ -164,7 +168,7 @@ class TUI_UI:
             return "This person does not exist."
 
         date = input(
-            "When was the patient diagnosed (ISO 8601, e.g. 2021-12-04 21:02):"
+            "Patient diagnosed (ISO 8601, e.g. 2021-12-04 21:02): "
             )
         try:
             datetime.fromisoformat(date)
@@ -173,7 +177,7 @@ class TUI_UI:
 
         print(self._show_diseases())
         disease = input(
-            "Which disease was the patient diagnosed with (index):"
+            "Choose disease (index): "
             )
         try:
             disease = self._diseases[int(disease)-1]
@@ -187,9 +191,18 @@ class TUI_UI:
         return infected_list
 
     def _import_meetings(self):
-        path = input("What's the csv file's path?\n")
-        self._people = read_meetings_csv(path)
-        return "Imported."
+        path = input("CSV file's path: ")
+        try:
+            self._people = read_meetings_csv(path)
+            return "Imported."
+        except FileNotFoundError:
+            return f"No file was found in {path}."
+        except IsADirectoryError:
+            return f"{path} is not CSV file's path."
+        except PermissionError:
+            return f"You do not have permission to access {path}."
+        except Exception:
+            return "Invalid data."
 
     def _set_meetings(self):
         meetings = []
