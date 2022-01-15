@@ -19,6 +19,9 @@ class Person:
     :type meeting_list: list
     '''
     def __init__(self, name: str, surname: str) -> None:
+        '''
+        Initializes Person object
+        '''
         self._name = str(name)
         self._surname = str(surname)
         self._meeting_list = []
@@ -36,7 +39,7 @@ class Person:
         self._meeting_list.append(meeting)
         person._meeting_list.append(meeting)
 
-    def remove_meeting(self, uuid: str) -> None:
+    def remove_meeting(self, uuid: str) -> bool:
         '''
         Removes a meeting based on it's UUID from meeting list.
         '''

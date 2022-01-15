@@ -13,7 +13,7 @@ class Disease:
     '''
     def __init__(self, name, infectious_period: int) -> None:
         '''
-        Initalizes disease object
+        Initalizes Disease object
         '''
         self._name = name
         try:
