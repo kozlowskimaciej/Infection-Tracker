@@ -45,6 +45,8 @@ class Person:
         '''
         uuid = str(uuid)
 
+        # Find matching meeting in meeting_list and remove it
+        # Returns True if removed and False if not found
         for index, meeting in enumerate(self._meeting_list):
             if str(meeting.uuid()) == uuid:
                 self._meeting_list.pop(index)
@@ -70,7 +72,7 @@ class Person:
 
         # Try to get disease's infectious period
         try:
-            infection_period = disease.get_infectious_period()
+            infectious_period = disease.get_infectious_period()
         except Exception:
             raise InvalidDiseaseError(disease)
 
@@ -89,8 +91,12 @@ class Person:
 
         if last_meeting is not None:
             last_meet_date = last_meeting.date()
+            last_meet_duration = last_meeting.duration()
+            total_infection = (last_meet_date + last_meet_duration)
+            total_infection += infectious_period
         else:
             last_meet_date = None
+            last_meet_duration = None
 
         # Search for all meetings which happend after the diagnosis date
         # minus infectious period of the disease
@@ -101,6 +107,7 @@ class Person:
 
         for meeting in self._meeting_list:
 
+            # Set second person as other_person
             people = meeting.people()
             if people[0].__str__() == self.__str__():
                 other_person = people[1]
@@ -108,19 +115,18 @@ class Person:
                 other_person = people[0]
 
             if meeting.uuid() not in checked_meetings:
+
                 meet_date = meeting.date()
+
                 if (last_meet_date is None and
-                    meet_date >= when_diagnosed - infection_period) or (
+                    meet_date >= when_diagnosed - infectious_period) or (
                         last_meet_date is not None and
                         meet_date >= last_meet_date and
-                        meet_date <=
-                        ((last_meet_date + last_meeting.duration())
-                            + infection_period)):
-                    # print(meeting.__str__(), other_person, sep=" ")
+                        meet_date <= total_infection):
                     checked_meetings.append(meeting.uuid())
                     infected_people.add(other_person.__str__())
 
-                    # Recursively search in potentially infected person's
+                    # Recursively search in other potentially infected person's
                     # meeting list for another people
 
                     other_person.who_is_infected(disease,
