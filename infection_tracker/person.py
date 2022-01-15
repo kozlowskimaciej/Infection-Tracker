@@ -40,10 +40,14 @@ class Person:
         '''
         Removes a meeting based on it's UUID from meeting list.
         '''
+        uuid = str(uuid)
+
         for index, meeting in enumerate(self._meeting_list):
             if str(meeting.uuid()) == uuid:
                 self._meeting_list.pop(index)
-                return
+                return True
+
+        return False
 
     def meetings(self) -> list:
         '''
