@@ -211,6 +211,3 @@ class TUI_UI:
             for meeting in meetinglist:
                 meetings.append(meeting)
         self._meetings = set(meetings)
-
-    def hello(self):
-        print('hello')
