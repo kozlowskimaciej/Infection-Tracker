@@ -1,6 +1,6 @@
-from infection_tracker.exceptions import (InvalidChoiceError,
-                                          PersonNotExistsError)
 from infection_tracker.disease import Disease
+from infection_tracker.person import Person
+from datetime import datetime
 from infection_tracker.files import read_meetings_csv
 from prettytable import PrettyTable
 
@@ -12,15 +12,15 @@ class TUI_UI:
     def __init__(self):
         self._diseases = []
         self._meetings = set()
-        self._people = []
+        self._people = dict()
         choices = {
             "1": {
                 "message": "Add a meeting",
-                "function": self.hello
+                "function": self._add_meeting
             },
             "2": {
                 "message": "Remove a meeting",
-                "function": self.hello
+                "function": self._remove_meeting
             },
             "3": {
                 "message": "Show meetings",
@@ -45,10 +45,6 @@ class TUI_UI:
             "8": {
                 "message": "Import meetings from csv file",
                 "function": self._import_meetings
-            },
-            "9": {
-                "message": "Export meetings to csv file",
-                "function": self.hello
             }
         }
 
@@ -62,8 +58,52 @@ class TUI_UI:
             try:
                 print(choices[choice_num]["function"]())
             except Exception:
-                raise InvalidChoiceError(choice_num)
+                print("Invalid choice.")
             print("\n")
+
+    def _add_meeting(self):
+        person1name = input("First name of first person: ")
+        person1sur = input("Last name of first person: ")
+        person1full = f"{person1name} {person1sur}"
+
+        person2name = input("First name of second person: ")
+        person2sur = input("Last name of second person: ")
+        person2full = f"{person2name} {person2sur}"
+
+        date = input("Date of meeting (ISO 8601, e.g. 2021-12-04 21:02): ")
+        try:
+            datetime.fromisoformat(date)
+        except Exception:
+            return "Wrong date."
+
+        duration = input("Meeting duration:")
+        try:
+            duration = int(duration)
+        except Exception:
+            return "Wrong duration."
+
+        if self._people.get(person1full) is None:
+            person1 = Person(person1name, person1sur)
+            self._people[person1full] = person1
+        else:
+            person1 = self._people.get(person1full)
+
+        if self._people.get(person2full) is None:
+            person2 = Person(person2name, person2sur)
+            self._people[person2full] = person2
+        else:
+            person2 = self._people.get(person2full)
+
+        person1.add_meeting(person2, date, duration)
+
+        return "Meeting added."
+
+    def _remove_meeting(self):
+        uuid = input("Meeting's UUID:")
+        for person in self._people:
+            self._people[person].remove_meeting(uuid)
+        self._set_meetings()
+        return "Meeting removed."
 
     def _show_meetings(self):
         self._set_meetings()
@@ -99,7 +139,7 @@ class TUI_UI:
         try:
             self._diseases.pop(int(choice_num)-1)
         except IndexError:
-            raise InvalidChoiceError(choice_num)
+            return "Wrong index"
 
         return "Disease removed."
 
@@ -118,20 +158,29 @@ class TUI_UI:
 
     def _get_infected_people_list(self):
         infected = input("Full name of infected person: ")
+        try:
+            infected = self._people[infected]
+        except KeyError:
+            return "This person does not exist."
+
         date = input(
             "When was the patient diagnosed (ISO 8601, e.g. 2021-12-04 21:02):"
             )
+        try:
+            datetime.fromisoformat(date)
+        except Exception:
+            return "Wrong date."
+
         print(self._show_diseases())
         disease = input(
             "Which disease was the patient diagnosed with (index):"
             )
-
         try:
-            infected_list = self._people[infected].who_is_infected(
-                                                self._diseases[int(disease)-1],
-                                                date)
-        except KeyError:
-            raise PersonNotExistsError(infected)
+            disease = self._diseases[int(disease)-1]
+        except Exception:
+            return "Wrong index."
+
+        infected_list = infected.who_is_infected(disease, date)
 
         infected_list = ", ".join(infected_list)
 

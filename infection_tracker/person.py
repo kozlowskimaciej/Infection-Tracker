@@ -36,6 +36,15 @@ class Person:
         self._meeting_list.append(meeting)
         person._meeting_list.append(meeting)
 
+    def remove_meeting(self, uuid: str) -> None:
+        '''
+        Removes a meeting based on it's UUID from meeting list.
+        '''
+        for index, meeting in enumerate(self._meeting_list):
+            if str(meeting.uuid()) == uuid:
+                self._meeting_list.pop(index)
+                return
+
     def meetings(self) -> list:
         '''
         Returns person's meeting list
