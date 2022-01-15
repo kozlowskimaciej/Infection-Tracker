@@ -1,5 +1,5 @@
 {
-    "description": "wip",
+    "description": "Infection Tracker is a tool for finding infected people based on their previous meetings.",
     "meetings": "CSV file that contains informations about meetings. The order of columns is as follows: Name_1, Surname_1, Name_2, Surname_2, Date (ISO 8601 format), Duration (in minutes).",
     "infected": "Name and surname of an infected person, e.g. 'Mark Howling'.",
     "period": "Infectious period of a disease (in minutes).",
