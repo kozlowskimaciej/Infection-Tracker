@@ -4,11 +4,11 @@ from infection_tracker.person import Person
 
 def read_meetings_csv(file):
     with open(file, newline='') as csvfile:
-        people = read_meetings(csvfile)
+        people = read_meetings_csv_handled(csvfile)
     return people
 
 
-def read_meetings(file_handle):
+def read_meetings_csv_handled(file_handle):
     reader = csv.DictReader(file_handle)
     people = dict()
     for row in reader:
@@ -28,4 +28,8 @@ def read_meetings(file_handle):
 
 def write_file_infected(file, infected):
     with open(file, 'w') as f:
-        f.write(infected)
+        write_file_infected_handled(f, infected)
+
+
+def write_file_infected_handled(file_handle, infected):
+    file_handle.write(infected)

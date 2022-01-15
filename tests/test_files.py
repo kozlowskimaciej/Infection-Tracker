@@ -1,6 +1,5 @@
-from infection_tracker.files import (read_meetings_csv,
-                                     write_file_infected,
-                                     read_meetings)
+from infection_tracker.files import (write_file_infected_handled,
+                                     read_meetings_csv_handled)
 from infection_tracker.exceptions import (InvalidDateError,
                                           InvalidDurationError)
 from io import StringIO
@@ -11,7 +10,7 @@ def test_read_meetings_csv():
     data = "Name_1,Surname_1,Name_2,Surname_2,Date,Duration\n"
     data += "Sofia,Baker,Marcus,Moore,2021-12-01 12:48,165"
     file_handle = StringIO(data)
-    people = read_meetings(file_handle)
+    people = read_meetings_csv_handled(file_handle)
     assert "Sofia Baker" in people.keys()
     assert "Marcus Moore" in people.keys()
 
@@ -21,7 +20,7 @@ def test_read_meetings_csv_invalid_date():
     data += "Sofia,Baker,Marcus,Moore,2021-12-49 12:48,165"
     file_handle = StringIO(data)
     with pytest.raises(InvalidDateError):
-        read_meetings(file_handle)
+        read_meetings_csv_handled(file_handle)
 
 
 def test_read_meetings_csv_invalid_duration():
@@ -29,7 +28,7 @@ def test_read_meetings_csv_invalid_duration():
     data += "Sofia,Baker,Marcus,Moore,2021-12-01 12:48,abc"
     file_handle = StringIO(data)
     with pytest.raises(InvalidDurationError):
-        read_meetings(file_handle)
+        read_meetings_csv_handled(file_handle)
 
 
 def test_read_meetings_csv_invalid_data():
@@ -37,9 +36,11 @@ def test_read_meetings_csv_invalid_data():
     data += "Sofia,Baker,Marcus,Moore,2021-12-01 12:48,abc"
     file_handle = StringIO(data)
     with pytest.raises(Exception):
-        read_meetings(file_handle)
+        read_meetings_csv_handled(file_handle)
 
 
-def test_read_meetings_csv_invalid_path():
-    with pytest.raises(FileNotFoundError):
-        read_meetings_csv("tests/example_data/invalid.csv")
+def test_write_file_infected_handled():
+    data = "Sofia Baker"
+    file_handle = StringIO()
+    write_file_infected_handled(file_handle, data)
+    assert file_handle.getvalue() == "Sofia Baker"
