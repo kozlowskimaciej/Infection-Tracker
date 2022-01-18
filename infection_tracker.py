@@ -9,7 +9,7 @@ def main(arguments):
     if len(arguments) > 1:
         CLI_UI(arguments)
     else:
-        TUI_UI()
+        TUI_UI().show()
 
 
 if __name__ == "__main__":

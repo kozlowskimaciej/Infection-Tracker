@@ -28,6 +28,11 @@ class TUI_UI:
         self._meetings = set()
         self._people = dict()
 
+    def show(self) -> None:
+        '''
+        Shows UI
+        '''
+
         # Define all possible choices
         choices = {
             "1": {
@@ -128,6 +133,8 @@ class TUI_UI:
         '''
         Removes a meeting from the database
         '''
+        print(self._show_meetings())
+
         uuid = input("Meeting's UUID: ")
 
         # Browse through all meetings to find the ones
@@ -188,7 +195,7 @@ class TUI_UI:
         '''
 
         # Show a table with the diseases
-        self._show_diseases()
+        print(self._show_diseases())
         choice_num = input(
             "Disease to remove (index): "
             )
