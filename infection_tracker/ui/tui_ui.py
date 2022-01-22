@@ -73,7 +73,6 @@ class TUI_UI:
 
         # Main loop for displaying UI
         while True:
-            print("\n")
             # Print choices with description
             for choice in choices:
                 print(choice+". ", choices[choice]["message"], sep=" ")
@@ -84,6 +83,7 @@ class TUI_UI:
                 print(choices[choice_num]["function"]())
             except Exception:
                 print("Invalid choice.")
+
             print("\n")
 
     def _add_meeting(self) -> str:

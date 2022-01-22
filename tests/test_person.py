@@ -125,7 +125,7 @@ def test_person_who_is_infected_invalid_disease():
 def test_person_who_is_infected_list_valid():
     '''
     Person4 is not infected, because he had met Person3 before
-    Person3 had been infected by Person2
+    Person3 has been infected by Person2
     '''
     person1 = Person("Carson", "Keeling")
     person2 = Person("Cally", "Fletcher")
@@ -142,7 +142,7 @@ def test_person_who_is_infected_list_valid():
 
 def test_person_who_is_infected_list_only_self():
     '''
-    Person1 didn't have any meetings therefore no one was infected
+    Person1 didn't attend any meetings therefore no one was infected
     '''
     person1 = Person("Carson", "Keeling")
     person2 = Person("Cally", "Fletcher")
