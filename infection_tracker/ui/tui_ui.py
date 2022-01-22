@@ -66,6 +66,10 @@ class TUI_UI:
             "8": {
                 "message": "Import meetings from csv file",
                 "function": self._import_meetings
+            },
+            "9": {
+                "message": "Exit.",
+                "function": exit
             }
         }
 
