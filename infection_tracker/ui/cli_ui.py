@@ -4,7 +4,7 @@ from infection_tracker.exceptions import PersonNotExistsError
 import json
 import argparse
 
-HELP_MSG_PATH = 'infection_tracker/help_messages.json'
+HELP_MSG_PATH = 'infection_tracker/ui/help_messages.json'
 
 
 class CLI_UI:
