@@ -14,7 +14,10 @@ def test_get_infected_people_list_person_invalid(monkeypatch):
     monkeypatch.setattr('builtins.input',
                         fake_input_get_infected_people_list_person_invalid)
     ui = TUI_UI()._get_infected_people_list()
-    assert ui == "This person does not exist."
+    # Because all messages in UI contains color codes in them,
+    # using == won't work, so we are checking if our message
+    # is in returned message from function
+    assert "This person does not exist." in ui
 
 
 def fake_input_add_disease(input):
@@ -28,13 +31,13 @@ def fake_input_add_disease(input):
 def test_show_add_disease(monkeypatch):
     monkeypatch.setattr('builtins.input', fake_input_add_disease)
     ui = TUI_UI()._add_disease()
-    assert ui == "Disease added."
+    assert "Disease added." in ui
 
 
 def test_show_diseases(monkeypatch):
     monkeypatch.setattr('builtins.input', fake_input_add_disease)
     ui = TUI_UI()
-    assert ui._add_disease() == "Disease added."
+    assert "Disease added." in ui._add_disease()
 
     diseases_table = str(ui._show_diseases())
     assert "Covid-19" in diseases_table
@@ -53,7 +56,7 @@ def test_show_add_disease_invalid_period(monkeypatch):
     monkeypatch.setattr('builtins.input',
                         fake_input_add_disease_invalid_period)
     ui = TUI_UI()._add_disease()
-    assert ui == "Invalid period."
+    assert "Invalid period." in ui
 
 
 def fake_input_add_disease_valid(input):
@@ -68,7 +71,7 @@ def test_show_add_disease_valid(monkeypatch):
     monkeypatch.setattr('builtins.input',
                         fake_input_add_disease_valid)
     ui = TUI_UI()._add_disease()
-    assert ui == "Disease added."
+    assert "Disease added." in ui
 
 
 def fake_input_remove_disease_valid(input):
@@ -88,7 +91,7 @@ def test_remove_disease_valid(monkeypatch):
     diseases_table = str(ui._show_diseases())
     assert "Covid-19" in diseases_table
     assert "20:00:0" in diseases_table
-    assert ui._remove_disease() == "Disease removed."
+    assert "Disease removed." in ui._remove_disease()
     diseases_table = str(ui._show_diseases())
     assert "Covid-19" not in diseases_table
     assert "20:00:0" not in diseases_table
@@ -108,7 +111,7 @@ def test_remove_disease_invalid_index(monkeypatch):
                         fake_input_remove_disease_invalid_index)
     ui = TUI_UI()
     ui._add_disease()
-    assert ui._remove_disease() == "Wrong index"
+    assert "Wrong index" in ui._remove_disease()
 
 
 def test_import_meetings():
@@ -136,4 +139,4 @@ def test_remove_meeting_invalid_index(monkeypatch):
     monkeypatch.setattr('builtins.input',
                         fake_input_remove_meeting_invalid_index)
     ui = TUI_UI()
-    assert ui._remove_meeting() == "Meeting abc removed."
+    assert "Meeting abc removed." in ui._remove_meeting()
