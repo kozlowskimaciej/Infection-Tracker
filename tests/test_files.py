@@ -15,6 +15,18 @@ def test_read_meetings_csv():
     assert "Marcus Moore" in people.keys()
 
 
+def test_read_meetings_csv_two_rows():
+    data = "Name_1,Surname_1,Name_2,Surname_2,Date,Duration\n"
+    data += "Sofia,Baker,Marcus,Moore,2021-12-01 12:48,165\n"
+    data += "Jenna,Payne,Vanessa,Reed,2021-12-01 14:31,36"
+    file_handle = StringIO(data)
+    people = read_meetings_csv_handled(file_handle)
+    assert "Sofia Baker" in people.keys()
+    assert "Marcus Moore" in people.keys()
+    assert "Jenna Payne" in people.keys()
+    assert "Vanessa Reed" in people.keys()
+
+
 def test_read_meetings_csv_invalid_date():
     data = "Name_1,Surname_1,Name_2,Surname_2,Date,Duration\n"
     data += "Sofia,Baker,Marcus,Moore,2021-12-49 12:48,165"
