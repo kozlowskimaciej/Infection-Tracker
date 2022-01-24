@@ -30,14 +30,15 @@ class Person:
         '''
         Adds new meeting to person's meeting list.
         '''
-        if not isinstance(person, Person):
-            raise InvalidPersonError(person)
 
         meeting = Meeting(self, person, date, duration)
 
-        # Add the meeting to both people's meeting list
-        self._meeting_list.append(meeting)
-        person._meeting_list.append(meeting)
+        try:
+            # Add the meeting to both people's meeting list
+            self._meeting_list.append(meeting)
+            person._meeting_list.append(meeting)
+        except Exception:
+            raise InvalidPersonError(person)
 
     def remove_meeting(self, uuid: str) -> bool:
         '''
