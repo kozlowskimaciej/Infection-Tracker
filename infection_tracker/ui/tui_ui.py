@@ -25,6 +25,8 @@ class TUI_UI:
         '''
         Initalizes text-based user interface
         '''
+
+        # Allows us to color messages.
         init(autoreset=True)
         self._diseases = []
         self._meetings = set()
