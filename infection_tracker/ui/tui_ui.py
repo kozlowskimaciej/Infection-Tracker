@@ -4,6 +4,7 @@ from infection_tracker.exceptions import (InvalidInfectiousPeriodError)
 from datetime import datetime
 from infection_tracker.files import read_meetings_csv
 from prettytable import PrettyTable
+from colorama import init, Fore, Back
 
 
 class TUI_UI:
@@ -24,6 +25,7 @@ class TUI_UI:
         '''
         Initalizes text-based user interface
         '''
+        init(autoreset=True)
         self._diseases = []
         self._meetings = set()
         self._people = dict()
@@ -73,14 +75,14 @@ class TUI_UI:
             }
         }
 
-        print('INFECTION TRACKER')
+        print(Back.GREEN + 'INFECTION TRACKER')
 
         # Main loop for displaying UI
         while True:
             # Print choices with description
             for choice in choices:
                 print(choice+". ", choices[choice]["message"], sep=" ")
-            choice_num = input("What's your choice: ")
+            choice_num = input(Fore.LIGHTCYAN_EX+"What's your choice: ")
 
             # Try running the function from the dictionary
             try:
@@ -106,13 +108,13 @@ class TUI_UI:
         try:
             datetime.fromisoformat(date)
         except Exception:
-            return "Wrong date."
+            return Fore.RED + "Wrong date."
 
         duration = input("Meeting duration in minutes: ")
         try:
             duration = int(duration)
         except Exception:
-            return "Wrong duration."
+            return Fore.RED + "Wrong duration."
 
         # If a person doesn't exist, create a new Person object
         # and add to database
@@ -131,7 +133,7 @@ class TUI_UI:
         # Adds meeting to both people's meeting list
         person1.add_meeting(person2, date, duration)
 
-        return "Meeting added."
+        return Fore.GREEN + "Meeting added."
 
     def _remove_meeting(self) -> str:
         '''
@@ -148,7 +150,7 @@ class TUI_UI:
 
         # Rebuild meetings database after removing a meeting
         self._set_meetings()
-        return f"Meeting {uuid} removed."
+        return Fore.GREEN + f"Meeting {uuid} removed."
 
     def _show_meetings(self) -> PrettyTable:
         '''
@@ -187,11 +189,11 @@ class TUI_UI:
         try:
             disease = Disease(name, period)
         except InvalidInfectiousPeriodError:
-            return "Invalid period."
+            return Fore.RED + "Invalid period."
 
         # Add the disease to database
         self._diseases.append(disease)
-        return "Disease added."
+        return Fore.GREEN + "Disease added."
 
     def _remove_disease(self) -> str:
         '''
@@ -208,9 +210,9 @@ class TUI_UI:
         try:
             self._diseases.pop(int(choice_num)-1)
         except IndexError:
-            return "Wrong index"
+            return Fore.RED + "Wrong index"
 
-        return "Disease removed."
+        return Fore.GREEN + "Disease removed."
 
     def _show_diseases(self) -> PrettyTable:
         '''
@@ -241,7 +243,7 @@ class TUI_UI:
         try:
             infected = self._people[infected]
         except KeyError:
-            return "This person does not exist."
+            return Fore.RED + "This person does not exist."
 
         date = input(
             "Patient diagnosed (ISO 8601, e.g. 2021-12-04 01:02): "
@@ -251,7 +253,7 @@ class TUI_UI:
         try:
             datetime.fromisoformat(date)
         except Exception:
-            return "Wrong date."
+            return Fore.RED + "Wrong date."
 
         # Show available diseases
         print(self._show_diseases())
@@ -263,7 +265,7 @@ class TUI_UI:
         try:
             disease = self._diseases[int(disease)-1]
         except Exception:
-            return "Wrong index."
+            return Fore.RED + "Wrong index."
 
         # Get a list with infected people
         infected_list = infected.who_is_infected(disease, date)
@@ -271,7 +273,7 @@ class TUI_UI:
         # Make a string from list
         infected_list = ", ".join(infected_list)
 
-        return infected_list
+        return Fore.GREEN + infected_list
 
     def _import_meetings(self) -> str:
         '''
@@ -282,15 +284,15 @@ class TUI_UI:
         # Try to import meetings
         try:
             self._people = read_meetings_csv(path)
-            return "Imported."
+            return Fore.GREEN + "Imported."
         except FileNotFoundError:
-            return f"No file was found in {path}."
+            return Fore.RED + f"No file was found in {path}."
         except IsADirectoryError:
-            return f"{path} is not CSV file's path."
+            return Fore.RED + f"{path} is not CSV file's path."
         except PermissionError:
-            return f"You do not have permission to access {path}."
+            return Fore.RED + f"You do not have permission to access {path}."
         except Exception:
-            return "Invalid data."
+            return Fore.RED + "Invalid data."
 
     def _set_meetings(self) -> None:
         '''
