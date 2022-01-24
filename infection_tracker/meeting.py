@@ -40,7 +40,8 @@ class Meeting:
 
         # Try to convert duration string to timedelta object
         try:
-            duration = timedelta(minutes=int(duration))
+            duration = timedelta(
+                minutes=abs(int(duration)))
         except ValueError:
             raise InvalidDurationError(duration)
 

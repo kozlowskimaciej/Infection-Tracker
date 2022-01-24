@@ -12,3 +12,9 @@ def test_disease_valid():
 def test_disease_invalid_period():
     with pytest.raises(InvalidInfectiousPeriodError):
         Disease("Grypa", "abc")
+
+
+def test_disease_negative_period():
+    disease = Disease("Grypa", -120)
+    assert disease.__str__() == "Grypa"
+    assert disease.get_infectious_period() == timedelta(minutes=120)

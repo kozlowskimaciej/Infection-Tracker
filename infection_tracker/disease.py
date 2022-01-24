@@ -16,8 +16,10 @@ class Disease:
         Initalizes Disease object
         '''
         self._name = name
+
         try:
-            self._infectious_period = timedelta(minutes=int(infectious_period))
+            self._infectious_period = timedelta(
+                minutes=abs(int(infectious_period)))
         except Exception:
             raise InvalidInfectiousPeriodError(infectious_period)
 

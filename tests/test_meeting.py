@@ -17,6 +17,18 @@ def test_meeting_valid():
     assert meeting.duration() == timedelta(minutes=duration)
 
 
+def test_meeting_negative_duration():
+    person1 = Person("Name1", "Surname1")
+    person2 = Person("Name2", "Surname2")
+    date = "2022-01-15 09:21"
+    duration = -120
+    meeting = Meeting(person1, person2, date, duration)
+    assert person1 in meeting.people()
+    assert person2 in meeting.people()
+    assert meeting.date() == datetime.fromisoformat(date)
+    assert meeting.duration() == timedelta(minutes=120)
+
+
 def test_meeting_invalid_date():
     person1 = Person("Name1", "Surname1")
     person2 = Person("Name2", "Surname2")
