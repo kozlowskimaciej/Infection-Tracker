@@ -31,3 +31,9 @@ class InvalidDiseaseError(Exception):
 class PersonNotExistsError(Exception):
     def __init__(self, person):
         super().__init__(f"{person} does not exist in any meeting.")
+
+
+class InvalidCSVColumnError(Exception):
+    def __init__(self, file_path):
+        super().__init__(
+            f"Not all necessary columns were found in {file_path} file.")

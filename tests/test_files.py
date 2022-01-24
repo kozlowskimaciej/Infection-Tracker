@@ -1,7 +1,8 @@
 from infection_tracker.files import (write_file_infected_handled,
                                      read_meetings_csv_handled)
 from infection_tracker.exceptions import (InvalidDateError,
-                                          InvalidDurationError)
+                                          InvalidDurationError,
+                                          InvalidCSVColumnError)
 from io import StringIO
 import pytest
 
@@ -48,6 +49,14 @@ def test_read_meetings_csv_invalid_data():
     data += "Sofia,Baker,Marcus,Moore,2021-12-01 12:48,abc"
     file_handle = StringIO(data)
     with pytest.raises(Exception):
+        read_meetings_csv_handled(file_handle)
+
+
+def test_read_meetings_csv_invalid_columns():
+    data = "Name_1,Name_2,Surname_2,Duration\n"
+    data += "Sofia,Marcus,Moore,2021-12-01 12:48,abc"
+    file_handle = StringIO(data)
+    with pytest.raises(InvalidCSVColumnError):
         read_meetings_csv_handled(file_handle)
 
 

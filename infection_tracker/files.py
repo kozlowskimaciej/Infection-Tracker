@@ -1,30 +1,35 @@
 import csv
 from infection_tracker.person import Person
+from infection_tracker.exceptions import InvalidCSVColumnError
 
 
 def read_meetings_csv(file) -> dict:
     with open(file, newline='') as csvfile:
-        people = read_meetings_csv_handled(csvfile)
+        people = read_meetings_csv_handled(csvfile, file)
     return people
 
 
-def read_meetings_csv_handled(file_handle) -> dict:
+def read_meetings_csv_handled(file_handle, file_path: str = None) -> dict:
     reader = csv.DictReader(file_handle)
     people = dict()
-    for row in reader:
-        # Check if a person already exists. If not, make a new Person object
-        person1 = str(row['Name_1'] + ' ' + row['Surname_1'])
-        if person1 not in people:
-            people[person1] = Person(row['Name_1'], row['Surname_1'])
+    try:
+        for row in reader:
+            # Check if a person already exists.
+            # If not, make a new Person object
+            person1 = str(row['Name_1'] + ' ' + row['Surname_1'])
+            if person1 not in people:
+                people[person1] = Person(row['Name_1'], row['Surname_1'])
 
-        person2 = str(row['Name_2'] + ' ' + row['Surname_2'])
-        if person2 not in people:
-            people[person2] = Person(row['Name_2'], row['Surname_2'])
+            person2 = str(row['Name_2'] + ' ' + row['Surname_2'])
+            if person2 not in people:
+                people[person2] = Person(row['Name_2'], row['Surname_2'])
 
-        # Add meeting to both people's meeting list
-        people[person1].add_meeting(people[person2],
-                                    row['Date'],
-                                    row['Duration'])
+            # Add meeting to both people's meeting list
+            people[person1].add_meeting(people[person2],
+                                        row['Date'],
+                                        row['Duration'])
+    except KeyError:
+        raise InvalidCSVColumnError(file_path)
     return people
 
 
