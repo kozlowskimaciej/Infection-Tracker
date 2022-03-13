@@ -26,7 +26,7 @@ Nazwa to skrót od Text-based user interface. Klasa odpowiada za konsolowy inter
 
 ## CLI_UI
 
-Nazwa to skrót od Command-line interface. Klasa odpowiada za interfejs wiersza poleceń. Za jego pomocą możemy podać ścieżkę do pliku .csv, imię i nazwisko osoby zakażonej, czas zaraźliwości choroby oraz datę zdiagnozowania choroby u tej osoby (format ISO 8601). Opcjonalnymi argumentami są —name (nazwa choroby) i —output <nazwa_pliku> (zapisywanie wyniku w postaci listy osób potencjalnie zakażonych do pliku).
+Nazwa to skrót od Command-line interface. Klasa odpowiada za interfejs wiersza poleceń. Za jego pomocą możemy podać ścieżkę do pliku .csv, imię i nazwisko osoby zakażonej, czas zaraźliwości choroby oraz datę zdiagnozowania choroby u tej osoby (format ISO 8601). Opcjonalnymi argumentami są _—name_ (nazwa choroby) i _—output <nazwa_pliku>_ (zapisywanie wyniku w postaci listy osób potencjalnie zakażonych do pliku).
 
 # Instrukcja użytkowania
 
@@ -60,7 +60,7 @@ Choroby usuwamy za pomocą opcji nr 5 podając jej numer indeksu.
 ###### 3. Pliki csv i lista potencjalnie zakażonych.
 
 Plik .csv musi mieć następujące kolumny:
-Name_1, Surname_1, Name_2, Surname_2, Date, Duration
+**Name_1, Surname_1, Name_2, Surname_2, Date, Duration**
 
 - Imię pierwszej osoby biorącej udział w spotkaniu
 - Nazwisko pierwszej osoby biorącej udział w spotkaniu - Imię drugiej osoby biorącej udział w spotkaniu
@@ -85,7 +85,7 @@ date - data zdiagnozowania choroby u osoby w formacie ISO 8601 I opcjonalne para
 —output [OUTPUT] - zapisywanie wyniku programu do danego pliku
 
 Plik .csv musi mieć następujące kolumny:
-Name_1, Surname_1, Name_2, Surname_2, Date, Duration
+**Name_1, Surname_1, Name_2, Surname_2, Date, Duration**
 
 - Imię pierwszej osoby biorącej udział w spotkaniu
 - Nazwisko pierwszej osoby biorącej udział w spotkaniu - Imię drugiej osoby biorącej udział w spotkaniu
@@ -101,12 +101,12 @@ Przykładowe polecenie biorące listę spotkań z pliku meetings.csv, wskazując
 `python3 ./infection_tracker.py tests/example_data/meetings.csv 'Audrey Brooks'`
 
 Wynikiem jest:
-12000 '2021-12-02 12:00'
-Tess Spencer, Savana Wells, Camila Evans, Owen Nelson, Andrew Cole, Audrey Brooks, Jenna Payne, Eddy Morrison, Grace Andrews, Albert Spencer, Marcus Moore, Haris Thompson
+_12000 '2021-12-02 12:00'_
+_Tess Spencer, Savana Wells, Camila Evans, Owen Nelson, Andrew Cole, Audrey Brooks, Jenna Payne, Eddy Morrison, Grace Andrews, Albert Spencer, Marcus Moore, Haris Thompson_
 
 ###### Przykład nr 2
 
 `python3 ./infection_tracker.py tests/example_data/meetings.csv 'Mike Jones' 2000 '2021-12-01 01:00' --output list.txt`
 Wynikiem jest:
-Haris Thompson, James Johnston, Mike Jones
+_Haris Thompson, James Johnston, Mike Jones_
 Dodatkowo utworzony zostaje plik list.txt z powyższym wynikiem.
